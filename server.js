@@ -9,6 +9,9 @@ var validator = require('email-validator');
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 const { verifyToken } = require('./controllers/verifyToken');
+const { logout } = require('./controllers/logout');
+const profile = require('./controllers/profile');
+
 
 
 const generateRandomSecretKey = () => {
@@ -52,6 +55,12 @@ app.post('/verifyToken', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, re
   
     res.json(user);
 });
+
+app.get('/profile', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
+  profile.getProfile(req, res, db);
+});
+
+app.post('/logout', logout);
   
 
 app.listen(3000, () => {

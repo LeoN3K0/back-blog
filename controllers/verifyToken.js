@@ -30,9 +30,9 @@ const verifyToken = (db, jwt, jwtSecretKey) => (req, res, next) => {
           return res.status(404).json({ error: 'User not found' });
         }
 
-        // Include the user data in the response
-        req.user = user; // Attach the user to the request object
-        next(); // Call the next middleware or route handler
+        
+        req.user = user;
+        next(); 
       })
       .catch(error => {
         console.log('Error fetching user data:', error);
