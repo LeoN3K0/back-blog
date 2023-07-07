@@ -5,12 +5,16 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const knex = require('knex');
 var validator = require('email-validator');
+const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
 const { verifyToken } = require('./controllers/verifyToken');
 const { logout } = require('./controllers/logout');
 const profile = require('./controllers/profile');
+
+const imageController = require('./controllers/image');
 
 
 
@@ -39,6 +43,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(fileUpload());
+app.use('/images', express.static(path.join(__dirname, './image-storage')));
 
 app.set('jwtSecretKey', secretKey);
 
@@ -61,6 +67,9 @@ app.get('/profile', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) =>
 });
 
 app.post('/logout', logout);
+
+app.post('/upload-image', imageController.uploadImage);
+app.delete('/delete-image/:imageName', imageController.deleteImage);
   
 
 app.listen(3000, () => {
