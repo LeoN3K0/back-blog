@@ -13,8 +13,8 @@ const signin = require('./controllers/signin');
 const { verifyToken } = require('./controllers/verifyToken');
 const { logout } = require('./controllers/logout');
 const profile = require('./controllers/profile');
-
 const imageController = require('./controllers/image');
+const blog = require('./controllers/blog');
 
 
 
@@ -68,8 +68,17 @@ app.get('/profile', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) =>
 
 app.post('/logout', logout);
 
-app.post('/upload-image', imageController.uploadImage);
-app.delete('/delete-image/:imageName', imageController.deleteImage);
+app.post('/upload-image', (req, res) => {
+  imageController.uploadImage(req, res, db);
+});
+
+app.delete('/delete-image/:imageName', (req, res) => {
+  imageController.deleteImage(req, res, db);
+});
+
+app.post('/create-blog', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
+  blog.createBlog(req, res, db);
+});
   
 
 app.listen(3000, () => {

@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const uploadImage = (req, res) => {
+const uploadImage = (req, res, db) => {
   // Check if it is an image link
   const { imageUrl } = req.body;
   if (imageUrl) {
@@ -28,7 +28,7 @@ const uploadImage = (req, res) => {
   });
 };
 
-const deleteImage = (req, res) => {
+const deleteImage = (req, res, db) => {
   const { imageName } = req.params;
   const imagePath = path.join(__dirname, '../image-storage', imageName);
 
