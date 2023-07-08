@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const uploadImage = (req, res) => {
   // Check if it is an image link
