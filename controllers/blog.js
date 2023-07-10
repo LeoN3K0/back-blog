@@ -1,25 +1,71 @@
 const createBlog = (req, res, db) => {
-    const { title, content, isPublished } = req.body;
-  
-    // Perform the necessary operations to insert the blog into the database
-    // You can customize this code to match your database schema and table structure
-  
-    db.insert({
+  const { title, body, published, publishedDate, author } = req.body;
+
+  db('blog')
+    .insert({
       title: title,
-      content: content,
-      is_published: isPublished,
+      body: body,
+      published: published,
+      published_date: publishedDate,
+      author: author
     })
-      .into('blog_table')
-      .then(() => {
-        const message = isPublished ? 'Blog published successfully' : 'Blog draft saved successfully';
-        res.json({ message });
-      })
-      .catch((error) => {
-        console.error('Error creating blog', error);
-        res.status(500).json({ error: 'Failed to create blog' });
-      });
-  };
-  
-  module.exports = {
-    createBlog,
-  };
+    .then(() => {
+      const message = published ? 'Blog published successfully' : 'Blog draft saved successfully';
+      res.json({ message });
+    })
+    .catch((error) => {
+      console.error('Error creating blog', error);
+      res.status(500).json({ error: 'Failed to create blog' });
+    });
+};
+
+const getAllPublishedBlogs = (req, res, db) => {
+  db.select('*')
+    .from('blog')
+    .where('published', true)
+    .then((blogs) => {
+      res.json(blogs);
+    })
+    .catch((error) => {
+      console.error('Error fetching published blogs', error);
+      res.status(500).json({ error: 'Failed to fetch published blogs' });
+    });
+};
+
+const getBlogsByAuthor = (req, res, db) => {
+  const { author } = req.params;
+
+  db.select('*')
+    .from('blog')
+    .where('author', '=', author)
+    .then((blogs) => {
+      res.json(blogs);
+    })
+    .catch((error) => {
+      console.error('Error fetching blogs by author', error);
+      res.status(500).json({ error: 'Failed to fetch blogs by author' });
+    });
+};
+
+const getPublishedBlogsByAuthor = (req, res, db) => {
+  const { author } = req.query;
+
+  db.select('*')
+    .from('blog')
+    .where('author', '=', author)
+    .andWhere('published', '=', true)
+    .then((blogs) => {
+      res.json(blogs);
+    })
+    .catch((error) => {
+      console.error('Error fetching published blogs by author', error);
+      res.status(500).json({ error: 'Failed to fetch published blogs by author' });
+    });
+};
+
+module.exports = {
+  createBlog,
+  getBlogsByAuthor,
+  getAllPublishedBlogs,
+  getPublishedBlogsByAuthor,
+};

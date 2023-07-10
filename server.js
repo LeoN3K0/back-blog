@@ -79,6 +79,22 @@ app.delete('/delete-image/:imageName', (req, res) => {
 app.post('/create-blog', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
   blog.createBlog(req, res, db);
 });
+
+app.get('/blogs', (req, res) => {
+  const { author } = req.query;
+
+  if (author) {
+    // Filter by author and show only published blogs
+    blog.getPublishedBlogsByAuthor(req, res, db);
+  } else {
+    // Read all published blogs
+    blog.getAllPublishedBlogs(req, res, db);
+  }
+});
+
+app.get('/blogs/:author', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
+  blog.getBlogsByAuthor(req, res, db);
+});
   
 
 app.listen(3000, () => {
