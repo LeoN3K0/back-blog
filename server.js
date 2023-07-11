@@ -95,6 +95,18 @@ app.get('/blogs', (req, res) => {
 app.get('/blogs/:author', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
   blog.getBlogsByAuthor(req, res, db);
 });
+
+app.delete('/blogs/:id', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
+  const { id } = req.params;
+
+  blog.deleteBlog(req, res, db, id);
+});
+
+app.put('/blogs/:id', verifyToken(db, jwt, app.get('jwtSecretKey')), (req, res) => {
+  const { id } = req.params;
+
+  blog.updateBlog(req, res, db, id);
+});
   
 
 app.listen(3000, () => {
