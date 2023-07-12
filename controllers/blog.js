@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const createBlog = (req, res, db) => {
-  const { title, body, published, publishedDate, author } = req.body;
+  const { title, body, published, publishedDate, author, image } = req.body;
 
   db('blog')
     .insert({
@@ -10,7 +10,8 @@ const createBlog = (req, res, db) => {
       body: body,
       published: published,
       published_date: publishedDate,
-      author: author
+      author: author,
+      image: image
     })
     .then(() => {
       const message = published ? 'Blog published successfully' : 'Blog draft saved successfully';
@@ -146,7 +147,7 @@ const getImageNameFromLink = (imageLink) => {
 };
 
 const updateBlog = (req, res, db, id) => {
-  const { title, body, published, publishedDate, author } = req.body;
+  const { title, body, published, publishedDate, author, image } = req.body;
 
   db('blog')
     .where('id', id)
@@ -155,7 +156,8 @@ const updateBlog = (req, res, db, id) => {
       body: body,
       published: published,
       published_date: publishedDate,
-      author: author
+      author: author, 
+      image: image
     })
     .then(() => {
       res.json({ message: 'Blog updated successfully' });
