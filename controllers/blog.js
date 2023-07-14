@@ -51,12 +51,29 @@ const getBlogsByAuthor = (req, res, db) => {
     });
 };
 
+
 const getPublishedBlogsByAuthor = (req, res, db) => {
   const { author } = req.query;
 
   db.select('*')
     .from('blog')
     .where('author', '=', author)
+    .andWhere('published', '=', true)
+    .then((blogs) => {
+      res.json(blogs);
+    })
+    .catch((error) => {
+      console.error('Error fetching published blogs by author', error);
+      res.status(500).json({ error: 'Failed to fetch published blogs by author' });
+    });
+};
+
+const getPublishedBlogsByID = (req, res, db) => {
+  const { id } = req.query;
+
+  db.select('*')
+    .from('blog')
+    .where('id', '=', id)
     .andWhere('published', '=', true)
     .then((blogs) => {
       res.json(blogs);
@@ -96,7 +113,7 @@ const deleteBlog = (req, res, db, id) => {
 
 const fetchAssociatedImages = (db, blogId) => {
   return db('blog')
-    .select('body')
+    .select('body', 'image')
     .where('id', blogId)
     .first()
     .then((result) => {
@@ -107,6 +124,9 @@ const fetchAssociatedImages = (db, blogId) => {
         while ((match = regex.exec(result.body))) {
           imageLinks.push(match[1]);
         }
+      }
+      if (result && result.image) {
+        imageLinks.push(result.image);
       }
       return imageLinks;
     })
@@ -178,4 +198,5 @@ module.exports = {
   getPublishedBlogsByAuthor,
   deleteBlog,
   updateBlog,
+  getPublishedBlogsByID,
 };
