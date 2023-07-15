@@ -13,9 +13,10 @@ const createBlog = (req, res, db) => {
       author: author,
       image: image
     })
-    .then(() => {
+    .returning('id') // Return the ID of the inserted blog
+    .then(([id]) => { // Destructure the ID from the result
       const message = published ? 'Blog published successfully' : 'Blog draft saved successfully';
-      res.json({ message });
+      res.json({ message, blogId: id }); // Include the blogId in the response
     })
     .catch((error) => {
       console.error('Error creating blog', error);
