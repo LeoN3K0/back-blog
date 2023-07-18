@@ -26,16 +26,10 @@ const secretKey = generateRandomSecretKey();
 
 const db = knex({
   client: 'pg',
-  connection: {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'left4dead2',
-    database: 'Blog',
-  },
-  pool: {
-    min: 0,
-  },
+      connection: process.env.DB_CONNECTION,
+      pool: {
+          min: 0
+      }
 });
 
 const app = express();
